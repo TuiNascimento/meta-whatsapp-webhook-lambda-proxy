@@ -9,6 +9,9 @@ Chatwoot instance, bypassing Hostinger's network routing issues.
 Meta  ──►  API Gateway (AWS, US)  ──►  Lambda  ──►  Chatwoot (Hostinger, Brazil)
 ```
 
+> No API Gateway needed — the Lambda exposes itself directly via a **Function URL**
+> (`*.lambda-url.<region>.on.aws`), which is free and requires no extra infrastructure.
+
 - **Verification (GET)**: Lambda checks `hub.verify_token` against your configured
   tokens and responds with the challenge string.
 - **Forwarding (POST)**: Lambda reads `entry[].changes[].value.metadata.display_phone_number`
@@ -24,9 +27,6 @@ payload directly matches the path segment in your Chatwoot webhook URL.
 
 - [AWS CLI](https://aws.amazon.com/cli/) configured (`aws configure`)
 - [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) installed
-
-> No API Gateway needed — the Lambda exposes itself directly via a **Function URL**
-> (`*.lambda-url.<region>.on.aws`), which is free and requires no extra infrastructure.
 
 Install SAM CLI on Linux/macOS:
 ```bash
@@ -54,7 +54,7 @@ When prompted:
 |-----------------------|------------------------------------------------------------------------|
 | Stack name            | `meta-wpp-webhook-echo`                                                |
 | AWS Region            | `us-east-1`  ← choose a US region to avoid Hostinger routing issues    |
-| ChatwootBaseUrl       | `ttps://selfhosted.customdomain.com.br/webhooks/whatsapp`                  |
+| ChatwootBaseUrl       | `https://selfhosted.customdomain.com.br/webhooks/whatsapp`                  |
 | VerifyTokens          | `mytoken123,anothertoken456`  ← comma-separated, one per Meta App      |
 | ForwardTimeoutSeconds | `10`                                                                   |
 
@@ -98,7 +98,7 @@ To change the Chatwoot URL or add/remove verify tokens:
 ```bash
 sam deploy \
   --parameter-overrides \
-    ChatwootBaseUrl="ttps://selfhosted.customdomain.com.br/webhooks/whatsapp" \
+    ChatwootBaseUrl="https://selfhosted.customdomain.com.br/webhooks/whatsapp" \
     VerifyTokens="token1,token2,token3"
 ```
 
