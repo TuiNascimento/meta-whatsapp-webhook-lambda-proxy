@@ -6,7 +6,7 @@ Chatwoot instance, bypassing Hostinger's network routing issues.
 ## How It Works
 
 ```
-Meta  ──►  API Gateway (AWS, US)  ──►  Lambda  ──►  Chatwoot (Hostinger, Brazil)
+Meta ──►  Lambda  ──►  Chatwoot (Hostinger, Brazil)
 ```
 
 - **Verification (GET)**: Lambda checks `hub.verify_token` against your configured
