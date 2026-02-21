@@ -6,7 +6,7 @@ Chatwoot instance, bypassing Hostinger's network routing issues.
 ## How It Works
 
 ```
-Meta  ──►  API Gateway (AWS, US)  ──►  Lambda  ──►  Chatwoot (Hostinger, Brazil)
+Meta ──►  Lambda  ──►  Chatwoot (Hostinger, Brazil)
 ```
 
 > No API Gateway needed — the Lambda exposes itself directly via a **Function URL**
