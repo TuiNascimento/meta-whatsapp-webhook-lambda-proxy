@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Meta WhatsApp Webhook Echo Lambda
+  Receives Meta webhooks and forwards them to the correct Chatwoot inbox
+  based on the display_phone_number in the payload metadata.
+
+Globals:
+  Function:
+    Timeout: 20
+    MemorySize: 128
+    Runtime: python3.12
+    Architectures:
+      - arm64  # Graviton2 — cheaper and faster for pure Python
+
+Parameters:
+  ChatwootBaseUrl:
+    Type: String
+    Description: >
+      Base URL for Chatwoot WhatsApp webhooks (without trailing slash).
+      Example: https://selfhosted.customdomain.com.br/webhooks/whatsapp
+
+  VerifyTokens:
+    Type: String
+    Description: >
+      Comma-separated list of Meta webhook verify tokens (one per Meta App /
+      inbox group). Example: mytoken123,anothertoken456
+
+  ForwardTimeoutSeconds:
+    Type: Number
+    Default: 10
+    Description: Timeout in seconds for the HTTP call to Chatwoot.
+
+Resources:
+  WebhookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: meta-wpp-webhook-echo
+      Handler: handler.lambda_handler
+      CodeUri: .
+      Description: Receives Meta WA webhooks and forwards to Chatwoot
+      Environment:
+        Variables:
+          CHATWOOT_BASE_URL: !Ref ChatwootBaseUrl
+          VERIFY_TOKENS: !Ref VerifyTokens
+          FORWARD_TIMEOUT_SECONDS: !Ref ForwardTimeoutSeconds
+      FunctionUrlConfig:
+        AuthType: NONE  # Public endpoint — Meta needs no auth to call it
+
+Outputs:
+  WebhookUrl:
+    Description: >
+      The URL to configure in the Meta Developer Console as your webhook endpoint.
+      Use this URL in: App Dashboard > WhatsApp > Configuration > Webhook URL
+    Value: !GetAtt WebhookFunctionUrl.FunctionUrl

@@ -1,0 +1,16 @@
+# SAM build artifacts
+.aws-sam/
+
+# SAM deploy config — contains stack name and parameter values (may include tokens)
+samconfig.toml
+
+# Claude Code session data
+.claude/
+
+# Context/research files
+context/
+*.txt
+
+# Python
+__pycache__/
+*.pyc
